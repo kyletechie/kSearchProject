@@ -1,8 +1,5 @@
-import axios from "axios";
 import cheerio from "cheerio";
-import fs from "fs";
-
-const data = fs.readFileSync("facebook3.log", "utf8");
+import sendRequest from "../src/dataGetter.js";
 
 function getName(data){
   const $ = cheerio.load(data);
@@ -58,7 +55,8 @@ function getLivesin(data){
   console.log(l)
 }
 
-function main(data){
+async function main(url){
+  const { data } = await sendRequest(url);
   const name = getName(data);
   const id = getID(data);
   const bio = getBio(data);
@@ -73,8 +71,6 @@ function main(data){
   }
 }
 
-console.log(main(data))
-
-getLivesin(data)
+//getLivesin(data)
 
 export default main
