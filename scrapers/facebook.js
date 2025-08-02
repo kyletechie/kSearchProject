@@ -1,33 +1,38 @@
 import cheerio from "cheerio";
 import sendRequest from "../src/dataGetter.js";
+import { selectByAttr } from "./utils.js";
 
-function getName(data){
-  const $ = cheerio.load(data);
-  const name = $('meta[property="og:title"]').attr("content");
+function getName($){
+  const name = selectByAttr($, "meta", {
+    property: "og:title"
+  }).attr("content")
   return name?.trim() || "N/A";
 }
 
-function getID(data){
-  const $ = cheerio.load(data);
-  const androidUrl = $('meta[property="al:android:url"]').attr("content");
+function getID($){
+  const androidUrl = selectByAttr($, "meta", {
+    property: "al:android:url"
+  }).attr("content");
   const urlParts = androidUrl?.split("/");
   const id = urlParts ? urlParts[urlParts.length - 1] : null
   return id || "N/A"
 }
 
-function getBio(data){
-  const $ = cheerio.load(data);
+function getBio($){
   // BUG: Some accounts.. the bio is not in the og:description
   // XXX: Invalid bio:Facebook gives people the power to share and makes the world more open and
-  const desc = $('meta[property="og:description"]').attr("content");
+  const desc = selectByAttr($, "meta", {
+    property: "og:description"
+  }).attr("content");
   const descParts = desc?.split(".");
   const bio = descParts ? descParts[2]?.trim() : null
   return bio || "N/A";
 }
 
-function getLikes(data){
-  const $ = cheerio.load(data);
-  const desc = $('meta[property="og:description"]').attr("content");
+function getLikes($){
+  const desc = selectByAttr($, "meta", {
+    property: "og:description"
+  }).attr("content")
   const descParts = desc?.split(".");
   let likes = descParts ? descParts[1]?.split("likes")[0]?.trim() : null
   if (likes?.includes(",")){
@@ -46,22 +51,25 @@ function getNickname(data){
 }
 
 function getFollowers(data){
+  // TODO: i don't think getting followers is possible
   const f = data.match(/"(\S+)\s+followers"/);
   console.log(f);
 }
 
 function getLivesin(data){
+  // TODO: lmao
   const l = data.match(/<span*>Lives in<\/span><span*>([^<]+)<\/span>/);
   console.log(l)
 }
 
 async function main(url){
   const { data } = await sendRequest(url);
-  const name = getName(data);
-  const id = getID(data);
-  const bio = getBio(data);
-  const likes = getLikes(data);
-  const nickname = getNickname(data);
+  const $ = cheerio.load(data);
+  const name = getName($);
+  const id = getID($);
+  const bio = getBio($);
+  const likes = getLikes($);
+  const nickname = getNickname($);
   return {
     name,
     id,
