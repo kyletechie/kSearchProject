@@ -30,9 +30,12 @@ function getBio($){
   return bio || "N/A";
 }
 
-function 
+function ytInitialData(){
+  const ytInitialData = data.split("ytInitialData = '")[1].split("';")[0];
+  console.log(JSON.parse(eval(`"${ytInitialData}"`)));
+}
 
-console.log(getBio($), getName($));
+ytInitialData()
 
 fs.writeFileSync("youtube", data);
 
