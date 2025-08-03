@@ -1,13 +1,6 @@
 import sendRequest from "../src/dataGetter.js";
-import fs from "fs";
 import cheerio from "cheerio";
 import { selectByAttr } from "./utils.js";
-
-const url = "https://m.youtube.com/@kairudev";
-
-const { data } = await sendRequest(url);
-
-const $ = cheerio.load(data);
 
 function getName($){
   const name = selectByAttr($, "meta", {
@@ -30,13 +23,17 @@ function getBio($){
   return bio || "N/A";
 }
 
-function ytInitialData(){
-  const ytInitialData = data.split("ytInitialData = '")[1].split("';")[0];
-  console.log(JSON.parse(eval(`"${ytInitialData}"`)));
+async function main(url){
+  const { data } = await sendRequest(url);
+  const $ = cheerio.load(data);
+  const name = getName($);
+  const bio = getBio($);
+  const channelId = getChannelID($);
+  return {
+    name,
+    bio,
+    channelId
+  }
 }
 
-ytInitialData()
-
-fs.writeFileSync("youtube", data);
-
-
+export default main
