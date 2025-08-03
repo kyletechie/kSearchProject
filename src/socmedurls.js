@@ -1,4 +1,5 @@
-import {  } from "";
+import ytscraper from "../scrapers/youtube.js";
+import igscraper from "../scrapers/instagram.js";
 
 class SocuriFormatter {
   constructor(username) {
@@ -16,7 +17,8 @@ class SocuriFormatter {
     }),
     instagram: () => ({
       url: this.#commonURIUnPlacement("https://instagram.com"),
-      platform: "Instagram"
+      platform: "Instagram",
+      scraper: igscraper
     }),
     twitter: () => ({
       url: this.#commonURIUnPlacement("https://x.com"),
@@ -40,7 +42,8 @@ class SocuriFormatter {
     }),
     youtube: () => ({
       url: this.#commonURIUnPlacement("https://youtube.com", true),
-      platform: "Youtube"
+      platform: "Youtube",
+      scraper: ytscraper
     }),
     pinterest: () => ({
       url: this.#commonURIUnPlacement("https://pinterest.com"),
@@ -205,4 +208,4 @@ class SocuriFormatter {
   }
 }
 
-console.log(new SocuriFormatter("Kairu").getAll())
+export default SocuriFormatter;

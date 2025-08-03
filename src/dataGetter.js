@@ -17,14 +17,22 @@ const defaultHeader = {
 }
 
 export default async (url, cheader, opts) => {
-  defaultHeader["Host"] = new URL(url).host;
-  if (cheader?.header && !cheader?.overwrite){
-    defaultHeader = { ...defaultHeader, ...cheader.header };
+  try{
+    defaultHeader["Host"] = new URL(url).host;
+    if (cheader?.header && !cheader?.overwrite){
+      defaultHeader = { ...defaultHeader, ...cheader.header };
+    }
+    return await axios.get(url, { 
+      headers: cheader?.overwrite && cheader?.header 
+        ? cheader.header 
+        : defaultHeader,
+      ...opts 
+    });
+  } catch(e){
+    return { 
+      emsg: e.message,
+      status: e?.response?.status,
+      statusText: e?.response?.statusText 
+    }
   }
-  return await axios.get(url, { 
-    headers: cheader?.overwrite && cheader?.header 
-      ? cheader.header 
-      : defaultHeader,
-    ...opts 
-  });
 }

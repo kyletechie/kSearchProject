@@ -23,8 +23,7 @@ function getBio($){
   return bio || "N/A";
 }
 
-async function main(url){
-  const { data } = await sendRequest(url);
+async function main(data){
   const $ = cheerio.load(data);
   const name = getName($);
   const bio = getBio($);

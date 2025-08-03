@@ -107,9 +107,8 @@ function getBioLinks($){
   }
 }
 
-async function main(url){
+async function main(data){
   try{
-    const { data } = await sendRequest(url);
     const $ = cheerio.load(data);
     const name = JSON.parse(`"${getName($)}"`);
     const _private = isPrivate($);
