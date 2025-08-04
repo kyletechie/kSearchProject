@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/kyletechie/kSearchProject/issues"
   },
-  "homepage": "https://github.com/kyletechie/kSearchProject#readme"
+  "homepage": "https://github.com/kyletechie/kSearchProject#readme",
+  "dependencies": {
+    "signale": "^1.4.0"
+  }
 }

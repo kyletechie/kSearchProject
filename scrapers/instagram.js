@@ -1,7 +1,5 @@
 import cheerio from "cheerio";
-import fs from "fs";
 import { selectByAttr } from "./utils.js";
-import sendRequest from "../src/dataGetter.js";
 
 function getName($){
   const data = $.html();
@@ -24,7 +22,6 @@ function getUsername($){
 function isPrivate($){
   const data = $.html();
   const isPrivate = data.match(/"is_private":([^,]+),/);
-  console.log(data, isPrivate)
   if (isPrivate && isPrivate[1]){
     return isPrivate[1] === "true";
   }
@@ -107,7 +104,7 @@ function getBioLinks($){
   }
 }
 
-async function main(data){
+function main(data){
   try{
     const $ = cheerio.load(data);
     const name = JSON.parse(`"${getName($)}"`);
@@ -131,7 +128,7 @@ async function main(data){
       category
     }
   } catch(e){
-    return null;
+    return "N/A";
   }
 }
 

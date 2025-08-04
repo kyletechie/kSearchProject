@@ -1,4 +1,3 @@
-import sendRequest from "../src/dataGetter.js";
 import cheerio from "cheerio";
 import { selectByAttr } from "./utils.js";
 
@@ -23,7 +22,7 @@ function getBio($){
   return bio || "N/A";
 }
 
-async function main(data){
+function main(data){
   const $ = cheerio.load(data);
   const name = getName($);
   const bio = getBio($);
