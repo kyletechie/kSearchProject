@@ -29,10 +29,9 @@ export default async (url, cheader, opts) => {
       ...opts 
     });
   } catch(e){
-    return { 
+    return {
       emsg: e.message,
-      status: e?.response?.status,
-      statusText: e?.response?.statusText 
-    }
+      status: e?.response ? e.response.statusText : e.code
+    };
   }
 }
