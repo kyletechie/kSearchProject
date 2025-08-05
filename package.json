@@ -21,7 +21,7 @@
   "dependencies": {
     "axios": "^1.11.0",
     "cheerio": "^1.1.2",
-    "signale": "^1.4.0",
+    "jsonfile": "^6.1.0",
     "winston": "^3.17.0"
   }
 }
