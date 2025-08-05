@@ -1,4 +1,3 @@
-import { inspect } from "util";
 import SocMeds from "./src/socmedurls.js";
 import sendRequest from "./src/dataGetter.js";
 import { Command } from "commander";
@@ -8,6 +7,7 @@ import logger from "./src/logger.js";
 import colors from "./src/colors.js";
 import fs from "fs";
 import jsonfile from "jsonfile";
+import dataFormat from "./src/dataFormatter.js";
 
 const program = new Command();
 const outputPath = path.join(process.cwd(), "results");
@@ -25,15 +25,29 @@ https://www.paypal.me/KyleTilano
 Thank you!`);
 
 program
-  .option("-u, --username <username>", "Target username to search for")
-  .option("-t, --timeout <ms>", "Timeout per HTTP request in milliseconds (default: 0)", parseInt)
-  .option("-o, --output <path>", "Results output path", outputPath)
-  .option("-v, --verbose", "Enable verbose logging", false)
-  .option("--only-live", "Show only platforms where the username exists", false)
+  .option(
+    "-u, --username <username>",
+    "Target username to search for across supported platforms (required)"
+  )
+  .option(
+    "-t, --timeout <ms>",
+    "Maximum time to wait for each HTTP request in milliseconds (default: 0 = no timeout)",
+    parseInt
+  )
+  .option(
+    "-o, --output <dir>",
+    "Directory to save the scan results",
+    outputPath
+  )
+  .option(
+    "-v, --verbose",
+    "Enable detailed logging of requests and responses"
+  )
+  .option(
+    "--only-live",
+    "Include only platforms where the username was found (HTTP 200)"
+  );
 
-
-
-  
 program.parse()
 
 const opts = program.opts();
@@ -45,52 +59,52 @@ function getVersion(){
 async function main() {
   if (!opts.username) {
     logger.error("No username specified. Use -u or --username argument");
-    process.exit(1);
+    program.help();
   }
 
-  if (opts.verbose) logger.info(`Starting scan for username: ${opts.username}`);
+  logger.info(`kSearch ${colors.yellow}${getVersion()} ${colors.white}— scanning ${colors.green}"${opts.username}"`);
 
   const socmedurls = new SocMeds(opts.username);
   const allSocMeds = Object.values(socmedurls.getAll());
 
-  if (opts.verbose) logger.info(`Loaded ${allSocMeds.length} platforms to scan.`);
+  if (opts.verbose) logger.info(`Loaded ${colors.yellow}${allSocMeds.length}${colors.white} platforms to scan.`);
 
   const results = await Promise.all(
     allSocMeds.map(async (sm) => {
-      if (opts.verbose) logger.info(`Fetching ${sm.platform} → ${sm.url}`);
-
       try {
+        if (opts.verbose) logger.info(`${colors.blue}GET ${colors.yellow}(${sm.platform}) ${colors.underscore + colors.green}${sm.url}${colors.reset}`);
         const data = await sendRequest(sm.url, null, { timeout: opts.timeout });
-        if (!data?.data){
-          throw Error(`${data.emsg} ${data.status}`);
+        if (!data?.data || data?.status !== 200){
+          const err = new Error("HTTP Request");
+          err.message = data.emsg || "No Response";
+          err.status = data.status || data.statusText;
+          throw err;
         }
-        const info = sm.scraper ? sm.scraper(data.data) : "N/A";
-
-        if (opts.verbose) logger.info(`[${sm.platform}] Response status: ${data.status} ${data.statusText}`);
+        const accountInfo = sm.scraper ? sm.scraper(data.data) : "N/A";
 
         const result = {
           ...sm,
           status: data.status,
           statusText: data.statusText,
-          info
+          accountInfo
         };
 
         const { url, platform, status, statusText } = result;
 
-        if (status === 200) {
-          console.log(`${colors.blue}[${platform}] ${colors.green}${colors.underscore}${url}${colors.reset} ${colors.green}(${statusText})`);
-        } else if (!opts.onlyLive) {
-          console.log(`${colors.blue}[${platform}] ${colors.red}${colors.underscore}${url}${colors.reset} ${colors.red}(${statusText})`);
+        logger.info(`${colors.blue}(${platform}) ${colors.green}${colors.underscore}${url}${colors.reset} ${colors.green}(${status} ${statusText})${colors.reset}`);
+
+        if (accountInfo !== "N/A"){
+          dataFormat(accountInfo, 1, sm.platform);
         }
 
         return result;
       } catch (err) {
-        if (opts.verbose) logger.warn(`Failed to fetch ${sm.platform}: ${err.message}`);
+        if (opts.verbose || !opts.onlyLive) logger.error(`${colors.yellow}(${sm.platform}) ${colors.red}${sm.url}: ${colors.white}${err.message} ${colors.yellow}(${err.status})`);
         return {
           ...sm,
-          status: null,
-          statusText: "Request Failed",
-          info: "N/A"
+          errorMessage: err.message,
+          statusText: err.status,
+          accountInfo: "N/A"
         };
       }
     })
@@ -99,18 +113,18 @@ async function main() {
   fs.mkdirSync(outputPath, { recursive: true });
 
   if (!fs.existsSync(opts.output) || !fs.statSync(opts.output).isDirectory()) {
-    logger.warn("Invalid output path, using the default:", outputPath);
+    logger.warn(`Invalid output path, using the default: ${colors.underscore + colors.green}${outputPath}${colors.reset}`);
     opts.output = outputPath;
   }
 
   const fileName = path.join(opts.output, `${opts.username}.json`);
   const finalResults = opts.onlyLive ? results.filter(a => a.status === 200) : results;
 
-  if (opts.verbose) logger.info(`Saving ${finalResults.length} result(s) to file: ${fileName}`);
+  if (opts.verbose) logger.info(`Saving ${colors.yellow}${finalResults.length} result(s)${colors.reset} to file: ${colors.underscore + colors.green}${fileName}${colors.reset}`);
 
   jsonfile.writeFileSync(fileName, finalResults, { spaces: 2 });
 
-  logger.info(`Total websites scanned: ${results.length}. Results saved to: ${fileName}`);
+  logger.info(`${colors.yellow}${finalResults.length}${colors.reset} sites scanned → ${colors.green}${colors.underscore}${fileName}${colors.reset}`);
 }
 
 main();

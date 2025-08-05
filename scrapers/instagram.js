@@ -124,8 +124,8 @@ function main(data){
       followers,
       posts,
       bio,
-      bioLinks,
-      category
+      category,
+      bioLinks
     }
   } catch(e){
     return "N/A";

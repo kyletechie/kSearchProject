@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/kyletechie/kSearchProject#readme",
   "dependencies": {
-    "signale": "^1.4.0"
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2",
+    "signale": "^1.4.0",
+    "winston": "^3.17.0"
   }
 }
