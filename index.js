@@ -53,7 +53,7 @@ program
     outputPath
   )
   .option(
-    `-of, --output-format <${outputFormats.join("|")}>`,
+    `--of, --output-format <${outputFormats.join("|")}>`,
     `Choose the file format to save your results in. (formats: ${outputFormats.join(", ")}).`,
     "json"
   )
