@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// test gitUpdater
+
 import SocMeds from "./src/socmedurls.js";
 import sendRequest from "./src/dataGetter.js";
 import { Command } from "commander";

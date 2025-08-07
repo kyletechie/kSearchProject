@@ -4,6 +4,8 @@ import { simpleGit } from "simple-git";
 import logger from "./logger.js";
 import colors from "./colors.js";
 
+// test gitUpdater
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.resolve(path.dirname(__filename), "..");
 
