@@ -45,7 +45,7 @@ program
   )
   .option(
     "--only-live",
-    "Include only platforms where the username was found (HTTP 200)"
+    "Save only platforms where the username was found (HTTP 200)"
   );
 
 program.parse()
@@ -59,6 +59,7 @@ function getVersion(){
 async function main() {
   if (!opts.username) {
     logger.error("No username specified. Use -u or --username argument");
+    logger.info("Example: kSearch -u johndoe");
     program.help();
   }
 
@@ -99,7 +100,7 @@ async function main() {
 
         return result;
       } catch (err) {
-        if (opts.verbose || !opts.onlyLive) logger.error(`${colors.yellow}(${sm.platform}) ${colors.red}${sm.url}: ${colors.white}${err.message} ${colors.yellow}(${err.status})`);
+        if (opts.verbose) logger.error(`${colors.yellow}(${sm.platform}) ${colors.red}${sm.url}: ${colors.white}${err.message} ${colors.yellow}(${err.status})`);
         return {
           ...sm,
           errorMessage: err.message,

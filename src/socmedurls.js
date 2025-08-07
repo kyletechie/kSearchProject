@@ -1,5 +1,6 @@
 import ytscraper from "../scrapers/youtube.js";
 import igscraper from "../scrapers/instagram.js";
+import ttscraper from "../scrapers/tiktok.js";
 
 class SocuriFormatter {
   constructor(username) {
@@ -26,7 +27,8 @@ class SocuriFormatter {
     }),
     tiktok: () => ({
       url: this.#commonURIUnPlacement("https://tiktok.com", true),
-      platform: "Tiktok"
+      platform: "Tiktok",
+      scraper: ttscraper
     }),
     linkedin: () => ({
       url: this.#commonURIUnPlacement("https://linkedin.com/in"),

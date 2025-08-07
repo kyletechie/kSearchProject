@@ -1,5 +1,7 @@
 import cheerio from "cheerio";
-import { selectByAttr } from "./utils.js";
+/*import { selectByAttr } from "./utils.js";
+import sendReq from "../src/dataGetter.js";
+import fs from "fs";*/
 
 function getName($){
   const data = $.html();
@@ -10,11 +12,11 @@ function getName($){
   return "N/A";
 }
 
-function getUsername($){
+function getID($){
   const data = $.html();
-  const username = data.match(/"username":"([^"]+)"/);
-  if (username && username[1]){
-    return username[1];
+  const id = data.match(/"fbid_v2":"(\d+)"/);
+  if (id && id[1]){
+    return id[1];
   }
   return "N/A";
 }
@@ -38,36 +40,54 @@ function isVerified($){
 }
 
 function getFollowingCount($){
+  /*
   const desc = selectByAttr($, "meta", {
     property: "og:description"
   }).attr("content")?.split(";")[0];
   const following = desc?.match(/([^\s]+) following/);
   if (following && following[1]){
     return following[1];
+  }*/
+  const data = $.html();
+  const following = data.match(/"following_count":(\d+),/);
+  if (following && following[1]){
+    return parseInt(following[1]);
   }
   return "N/A";
-
 }
 
 function getFollowersCount($){
+  /*
   const desc = selectByAttr($, "meta", {
     property: "og:description"
   }).attr("content")?.split(";")[0];
   const followers = desc?.match(/([^\s]+) followers/);
   if (followers && followers[1]){
     return followers[1];
+  }*/
+  const data = $.html();
+  const followers = data.match(/"follower_count":(\d+),/);
+  if (followers && followers[1]){
+    return parseInt(followers[1]);
   }
   return "N/A";
 } 
 
 function getPostsCount($){
+  /*
   const desc = selectByAttr($, "meta", {
     property: "og:description"
   }).attr("content")?.split(";")[0];
   const posts = desc?.match(/([^\s]+) posts/);
   if (posts && posts[1]){
     return posts[1];
+  }*/
+  const data = $.html();
+  const posts = data.match(/"media_count":(\d+),/);
+  if (posts && posts[1]){
+    return parseInt(posts[1]);
   }
+  return "N/A";
 }
 
 function getBio($){
@@ -100,7 +120,7 @@ function getBioLinks($){
     }
     return results;
   } catch(e){
-    return [];
+    return "N/A";
   }
 }
 
@@ -108,6 +128,7 @@ function main(data){
   try{
     const $ = cheerio.load(data);
     const name = JSON.parse(`"${getName($)}"`);
+    const ID = getID($);
     const _private = isPrivate($);
     const verified = isVerified($);
     const following = getFollowingCount($);
@@ -118,6 +139,7 @@ function main(data){
     const category = getCategory($);
     return {
       name,
+      ID,
       private: _private,
       verified,
       following,
@@ -131,5 +153,9 @@ function main(data){
     return "N/A";
   }
 }
+
+/*const { data } = await sendReq("https://instagram.com/kairudev");
+console.log(main(data))
+fs.writeFileSync("instagram.html", data);*/
 
 export default main
