@@ -1,8 +1,6 @@
 import cheerio from "cheerio";
 import { selectByAttr } from "./utils.js";
 
-// test gitUpdater
-
 function getName($){
   const name = selectByAttr($, "meta", {
     itemprop: "name"

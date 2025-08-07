@@ -4,8 +4,6 @@ import { simpleGit } from "simple-git";
 import logger from "./logger.js";
 import colors from "./colors.js";
 
-// test gitUpdater
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.resolve(path.dirname(__filename), "..");
 
@@ -24,8 +22,8 @@ async function updateRepo(){
       const commitDate = new Date(log.latest.date).toLocaleString();
       const authorName = log.latest.author_name;
       const authorEmail = log.latest.author_email;
-      logger.info(`kSearch is successfully updated.`);
-      logger.info(`${colors.green}(${commitHash})${colors.white}: ${colors.green}${commitMessage} ${colors.white}> ${colors.green}${authorName} ${colors.yellow}<${authorEmail}> ${colors.blue}(${commitDate})`);
+      logger.info(`${colors.magenta}(${commitHash})${colors.white}: ${colors.green}${commitMessage} ${colors.white}> ${colors.green}${authorName} ${colors.yellow}<${authorEmail}> ${colors.blue}(${commitDate})`);
+      logger.info(`${colors.yellow}kSearch${colors.reset} is Successfully updated.`);
       process.exit(0);
     }
   } catch (e) {
