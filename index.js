@@ -77,6 +77,7 @@ function getVersion(){
 async function main() {
   if (opts.update){
     await gitUpdate();
+    process.exit(0);
   }
   if (!opts.username) {
     logger.error("No username specified. Use -u or --username argument");

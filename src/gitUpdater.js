@@ -26,11 +26,9 @@ async function updateRepo(){
       execSync("npm install", { stdio: "inherit" });
       logger.info(`${colors.magenta}(${commitHash})${colors.white}: ${colors.green}${commitMessage} ${colors.white}> ${colors.green}${authorName} ${colors.yellow}<${authorEmail}> ${colors.blue}(${commitDate})`);
       logger.info(`${colors.yellow}kSearch${colors.reset} is Successfully updated.`);
-      process.exit(0);
     }
   } catch (e) {
     logger.error("Update Failed:", e.message);
-    process.exit(1);
   }
 }
 
