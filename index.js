@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+/*
+ * Developer: Kyle Tilano (@kyletechie)
+ * Project: kSearchProject
+ * Description: An open-source OSINT tool to search for username profiles across multiple platforms.
+ * Github: https://github.com/kyletechie/kSearchProject
+ * License: MIT
+*/
+
 import SocMeds from "./src/socmedurls.js";
 import sendRequest from "./src/dataGetter.js";
 import { Command } from "commander";
