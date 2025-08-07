@@ -1,6 +1,7 @@
 import ytscraper from "../scrapers/youtube.js";
 import igscraper from "../scrapers/instagram.js";
 import ttscraper from "../scrapers/tiktok.js";
+import tgscraper from "../scrapers/telegram.js";
 
 class SocuriFormatter {
   constructor(username) {
@@ -201,7 +202,8 @@ class SocuriFormatter {
     }),
     telegram: () => ({
       url: this.#commonURIUnPlacement("https://t.me"),
-      platform: "Telegram"
+      platform: "Telegram",
+      scraper: tgscraper
     })
   };
 
