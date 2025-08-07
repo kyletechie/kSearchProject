@@ -150,7 +150,7 @@ function main(data){
       bioLinks
     }
   } catch(e){
-    return "N/A";
+    return {};
   }
 }
 

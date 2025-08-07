@@ -2,7 +2,7 @@ import winston from 'winston';
 import colors from "../src/colors.js";
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: 'debug',
   format: winston.format.combine(
     winston.format.colorize(), // adds color to level
     winston.format.timestamp({ format: 'H:mm:ss' }), // timestamp format

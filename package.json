@@ -1,6 +1,6 @@
 {
   "name": "ksearchproject",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -22,8 +22,11 @@
   },
   "homepage": "https://github.com/kyletechie/kSearchProject#readme",
   "dependencies": {
+    "@json2csv/plainjs": "^7.0.6",
     "axios": "^1.11.0",
     "cheerio": "^1.0.0-rc.12",
+    "js-yaml": "^4.1.0",
+    "json-to-txt": "^2.1.1",
     "jsonfile": "^6.1.0",
     "simple-git": "^3.28.0",
     "winston": "^3.17.0"

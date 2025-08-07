@@ -8,12 +8,14 @@ import path from "path";
 import logger from "./src/logger.js";
 import colors from "./src/colors.js";
 import fs from "fs";
-import jsonfile from "jsonfile";
 import dataFormat from "./src/dataFormatter.js";
 import gitUpdate from "./src/gitUpdater.js";
+import dump2file from "./src/dump2file.js";
+import { inspect } from "util";
 
 const program = new Command();
 const outputPath = path.join(process.cwd(), "results");
+const outputFormats = ["json", "csv", "yaml", "txt"];
 
 program
   .name("kSearch")
@@ -30,25 +32,30 @@ Thank you!`);
 program
   .option(
     "-u, --username <username>",
-    "Target username to search for across supported platforms (required)"
+    "The username you want to search for (required)."
   )
   .option(
     "-t, --timeout <ms>",
-    "Maximum time to wait for each HTTP request in milliseconds (default: 0 = no timeout)",
+    "Set how long (in milliseconds) to wait for each request before skipping. (default: 0 = wait forever)",
     parseInt
   )
   .option(
     "-o, --output <dir>",
-    "Directory to save the scan results",
+    "Folder to save the scan results to.",
     outputPath
   )
   .option(
+    `-of, --output-format <${outputFormats.join("|")}>`,
+    `Choose the file format to save your results in. (formats: ${outputFormats.join(", ")}).`,
+    "json"
+  )
+  .option(
     "-v, --verbose",
-    "Enable detailed logging of requests and responses"
+    "Show detailed logs of what the tool is doing, including each HTTP request."
   )
   .option(
     "--update",
-    "Update the kSearch tool"
+    "Check for updates and automatically update kSearch to the latest version."
   );
 
 program.parse()
@@ -68,13 +75,18 @@ async function main() {
     logger.info("Example: kSearch -u johndoe");
     program.help();
   }
+  if (!outputFormats.includes(opts.outputFormat)){
+    logger.error(`"${opts.outputFormat}" is not a supported output format. (supported formats: ${outputFormats.join(", ")})`);
+    process.exit(1);
+  }
 
   logger.info(`kSearch ${colors.yellow}${getVersion()} ${colors.white}— scanning ${colors.green}"${opts.username}"`);
+  if (opts.verbose) logger.verbose(`Options: ${inspect(opts, { colors: true })}`);
 
   const socmedurls = new SocMeds(opts.username);
   const allSocMeds = Object.values(socmedurls.getAll());
 
-  if (opts.verbose) logger.info(`Loaded ${colors.yellow}${allSocMeds.length}${colors.white} platforms to scan.`);
+  logger.info(`Loaded ${colors.yellow}${allSocMeds.length}${colors.white} platforms to scan.`);
 
   const results = await Promise.all(
     allSocMeds.map(async (sm) => {
@@ -87,20 +99,20 @@ async function main() {
           err.status = data.status || data.statusText;
           throw err;
         }
-        const accountInfo = sm.scraper ? sm.scraper(data.data) : "N/A";
+        const accountInfo = sm.scraper ? sm.scraper(data.data) : null;
 
         const result = {
           ...sm,
           status: data.status,
           statusText: data.statusText,
-          accountInfo
+          ...accountInfo
         };
 
         const { url, platform, status, statusText } = result;
 
         logger.info(`${colors.blue}(${platform}) ${colors.green}${colors.underscore}${url}${colors.reset} ${colors.green}(${status} ${statusText})${colors.reset}`);
 
-        if (accountInfo !== "N/A"){
+        if (accountInfo){
           dataFormat(accountInfo, 1, sm.platform);
         }
 
@@ -111,7 +123,6 @@ async function main() {
           ...sm,
           errorMessage: err.message,
           statusText: err.status,
-          accountInfo: "N/A"
         };
       }
     })
@@ -124,16 +135,20 @@ async function main() {
     opts.output = outputPath;
   }
 
-  const fileName = path.join(opts.output, `${opts.username}.json`);
-  const finalResults = results.filter(a => a.status === 200);
+  const fileName = path.join(opts.output, `${opts.username}.${opts.outputFormat}`);
+  const finalResults = results.filter(a => a.status === 200).map((v) => {
+    delete v.scraper
+    return v;
+  });
+
+  dump2file(fileName, finalResults);
 
   if (opts.verbose) logger.info(`Saving ${colors.yellow}${finalResults.length} result(s)${colors.reset} to file: ${colors.underscore + colors.green}${fileName}${colors.reset}`);
 
-  jsonfile.writeFileSync(fileName, finalResults, { spaces: 2 });
-
   /*logger.info(`${colors.red}${results.length - finalResults.length}${colors.reset} sites not found.`);
   logger.info(`${colors.yellow}${finalResults.length}${colors.reset} sites found → ${colors.green}${colors.underscore}${fileName}${colors.reset}`);*/
-  logger.info(`Found ${colors.yellow}${finalResults.length}${colors.reset} sites → saved to ${colors.green}${colors.underscore}${fileName}${colors.reset}, ${colors.red}${results.length - finalResults.length}${colors.reset} not found.`);
+
+  logger.info(`${colors.yellow}${finalResults.length} site(s)${colors.reset} saved to ${colors.green}${colors.underscore}${fileName}${colors.reset}. ${colors.red}${results.length - finalResults.length} site(s)${colors.reset} not found.`);
 }
 
 main();
