@@ -1,8 +1,11 @@
 {
   "name": "ksearchproject",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "kSearch": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,6 +25,7 @@
     "axios": "^1.11.0",
     "cheerio": "^1.0.0-rc.12",
     "jsonfile": "^6.1.0",
+    "simple-git": "^3.28.0",
     "winston": "^3.17.0"
   }
 }

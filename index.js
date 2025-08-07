@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import SocMeds from "./src/socmedurls.js";
 import sendRequest from "./src/dataGetter.js";
 import { Command } from "commander";
@@ -8,6 +10,7 @@ import colors from "./src/colors.js";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import dataFormat from "./src/dataFormatter.js";
+import gitUpdate from "./src/gitUpdater.js";
 
 const program = new Command();
 const outputPath = path.join(process.cwd(), "results");
@@ -44,8 +47,8 @@ program
     "Enable detailed logging of requests and responses"
   )
   .option(
-    "--only-live",
-    "Save only platforms where the username was found (HTTP 200)"
+    "--update",
+    "Update the kSearch tool"
   );
 
 program.parse()
@@ -57,6 +60,9 @@ function getVersion(){
 }
 
 async function main() {
+  if (opts.update){
+    await gitUpdate();
+  }
   if (!opts.username) {
     logger.error("No username specified. Use -u or --username argument");
     logger.info("Example: kSearch -u johndoe");
@@ -119,13 +125,15 @@ async function main() {
   }
 
   const fileName = path.join(opts.output, `${opts.username}.json`);
-  const finalResults = opts.onlyLive ? results.filter(a => a.status === 200) : results;
+  const finalResults = results.filter(a => a.status === 200);
 
   if (opts.verbose) logger.info(`Saving ${colors.yellow}${finalResults.length} result(s)${colors.reset} to file: ${colors.underscore + colors.green}${fileName}${colors.reset}`);
 
   jsonfile.writeFileSync(fileName, finalResults, { spaces: 2 });
 
-  logger.info(`${colors.yellow}${finalResults.length}${colors.reset} sites scanned → ${colors.green}${colors.underscore}${fileName}${colors.reset}`);
+  /*logger.info(`${colors.red}${results.length - finalResults.length}${colors.reset} sites not found.`);
+  logger.info(`${colors.yellow}${finalResults.length}${colors.reset} sites found → ${colors.green}${colors.underscore}${fileName}${colors.reset}`);*/
+  logger.info(`Found ${colors.yellow}${finalResults.length}${colors.reset} sites → saved to ${colors.green}${colors.underscore}${fileName}${colors.reset}, ${colors.red}${results.length - finalResults.length}${colors.reset} not found.`);
 }
 
 main();
