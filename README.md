@@ -55,6 +55,7 @@ kSearch -u <username>
 
 ## Disclaimer
 
+> [!CAUTION]
 > This tool is intended for **ethical** use only.
 > You are responsible for your actions. Do not use kSearch for illegal activities.
 
