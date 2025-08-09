@@ -3,8 +3,8 @@
 An open-source **OSINT** (Open-Source Intelligence) tool that searches for username profiles across multiple social media platforms.
 Designed for ethical hacking, cybersecurity research, and digital investigations.
 
-[kSearchScreenshot](./assets/kSearch.png)
-[kSearchScreenshot](./assets/kSearch2.png)
+![kSearchScreenshot](./assets/kSearch.png)
+![kSearchScreenshot](./assets/kSearch2.png)
 
 ---
 
