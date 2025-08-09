@@ -24,6 +24,8 @@ function getBio($){
   // XXX: Invalid bio:Facebook gives people the power to share and makes the world more open and
   if (!getLikes($) >= 0){
     // yung bio available lang sa mga professional mode accounts
+    //
+    // The Bio is only available in Professional Mode Accounts
     return;
   }
   const desc = selectByAttr($, "meta", {
@@ -79,12 +81,12 @@ function getCategory($){
 
 function getUniversity($){
   const studiedAt = $("span.f1:contains('Studied at ')").next().text();
-  return studiedAt?.trim()?.replaceAll("\n", "");
+  return studiedAt?.trim()?.replaceAll("\n", " ");
 }
 
 function getHighschool($){
   const hs = $("span.f1:contains('Went to ')").next().text();
-  return hs?.trim()?.replaceAll("\n", "");
+  return hs?.trim()?.replaceAll("\n", " ");
 }
 
 function main(data){
