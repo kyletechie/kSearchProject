@@ -51,11 +51,17 @@ Thank you!
 kSearch -u <username>
 ```
 
+**Example:**
+
+```bash
+kSearch -u johndoe
+```
+
 ---
 
 ## Disclaimer
 
-> [!CAUTION]
+> [!WARNING]
 > This tool is intended for **ethical** use only.
 > You are responsible for your actions. Do not use kSearch for illegal activities.
 
