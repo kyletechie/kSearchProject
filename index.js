@@ -11,7 +11,6 @@
 import SocMeds from "./src/socmedurls.js";
 import sendRequest from "./src/dataGetter.js";
 import { Command } from "commander";
-import packagejson from "./package.json" with { type: "json" };
 import path from "path";
 import logger from "./src/logger.js";
 import colors from "./src/colors.js";
@@ -20,10 +19,14 @@ import dataFormat from "./src/dataFormatter.js";
 import gitUpdate from "./src/gitUpdater.js";
 import dump2file from "./src/dump2file.js";
 import { inspect } from "util";
+import getVersion from "./src/version.js";
+import isUpToDate from "./src/updateChecker.js";
 
 const program = new Command();
 const outputPath = path.join(process.cwd(), "results");
 const outputFormats = ["json", "csv", "yaml", "txt"];
+
+const repoStatus = await isUpToDate();
 
 program
   .name("kSearch")
@@ -70,11 +73,15 @@ program.parse()
 
 const opts = program.opts();
 
-function getVersion(){
-  return /^\d+.\d+.\d+$/.test(packagejson.version) ? `v${packagejson.version}` : "v?.?.?";
-}
-
 async function main() {
+  if (opts.verbose && repoStatus.uptodate){
+    logger.info(repoStatus.message);
+  }
+  if (!repoStatus.uptodate){
+    logger.warn(repoStatus.message);
+    logger.warn(`local: ${colors.red}${repoStatus.localHash}`);
+    logger.warn(`remote: ${colors.green}${repoStatus.remoteHash}`);
+  }
   if (opts.update){
     await gitUpdate();
     process.exit(0);
@@ -89,7 +96,7 @@ async function main() {
     process.exit(1);
   }
 
-  logger.info(`kSearch ${colors.yellow}${getVersion()} ${colors.white}— scanning ${colors.green}"${opts.username}"`);
+  logger.info(`${colors.yellow}kSearch ${getVersion()} ${colors.white}— scanning ${colors.green}"${opts.username}"`);
   if (opts.verbose) logger.verbose(`Options: ${inspect(opts, { colors: true })}`);
 
   const socmedurls = new SocMeds(opts.username);
@@ -100,7 +107,7 @@ async function main() {
   const results = await Promise.all(
     allSocMeds.map(async (sm) => {
       try {
-        if (opts.verbose) logger.info(`${colors.blue}GET ${colors.yellow}(${sm.platform}) ${colors.underscore + colors.green}${sm.url}${colors.reset}`);
+        if (opts.verbose) logger.verbose(`${colors.blue}GET ${colors.yellow}(${sm.platform}) ${colors.underscore + colors.green}${sm.url}${colors.reset}`);
         const data = await sendRequest(sm.url, null, { timeout: opts.timeout });
         if (!data?.data || data?.status !== 200){
           const err = new Error("HTTP Request");
@@ -127,7 +134,7 @@ async function main() {
 
         return result;
       } catch (err) {
-        if (opts.verbose) logger.error(`${colors.yellow}(${sm.platform}) ${colors.red}${sm.url}: ${colors.white}${err.message} ${colors.yellow}(${err.status})`);
+        if (opts.verbose) logger.verbose(`${colors.yellow}(${sm.platform}) ${colors.red}${sm.url}: ${colors.white}${err.message} ${colors.yellow}(${err.status})`);
         return {
           ...sm,
           errorMessage: err.message,
@@ -152,7 +159,7 @@ async function main() {
 
   dump2file(fileName, finalResults);
 
-  if (opts.verbose) logger.info(`Saving ${colors.yellow}${finalResults.length} result(s)${colors.reset} to file: ${colors.underscore + colors.green}${fileName}${colors.reset}`);
+  if (opts.verbose) logger.verbose(`Saving ${colors.yellow}${finalResults.length} result(s)${colors.reset} to file: ${colors.underscore + colors.green}${fileName}${colors.reset}`);
 
   /*logger.info(`${colors.red}${results.length - finalResults.length}${colors.reset} sites not found.`);
   logger.info(`${colors.yellow}${finalResults.length}${colors.reset} sites found → ${colors.green}${colors.underscore}${fileName}${colors.reset}`);*/

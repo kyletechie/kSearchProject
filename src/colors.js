@@ -1,5 +1,5 @@
 const colors = {
-  reset: "\x1b[0m",
+  reset: "\x1b[0;37m",
   underscore: "\x1b[4m",
   red: "\x1b[31m",
   green: "\x1b[32m",
