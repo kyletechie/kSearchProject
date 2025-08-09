@@ -26,6 +26,7 @@ const program = new Command();
 const outputPath = path.join(process.cwd(), "results");
 const outputFormats = ["json", "csv", "yaml", "txt"];
 
+// Test
 const repoStatus = await isUpToDate();
 
 program
