@@ -5,21 +5,21 @@ function getName($){
   const name = selectByAttr($, "meta", {
     itemprop: "name"
   }).attr("content");
-  return name || "N/A";
+  return name;
 }
 
 function getChannelID($){
   const channelId = selectByAttr($, "meta", {
     itemprop: "identifier"
   }).attr("content");
-  return channelId || "N/A";
+  return channelId;
 }
 
 function getBio($){
   const bio = selectByAttr($, "meta", {
     itemprop: "description"
   }).attr("content");
-  return bio || "N/A";
+  return bio;
 }
 
 function main(data){
@@ -28,9 +28,9 @@ function main(data){
   const bio = getBio($);
   const channelId = getChannelID($);
   return {
-    name,
-    bio,
-    channelId
+    ...(name && { name }),
+    ...(bio && { bio }),
+    ...(channelId && { channelId })
   }
 }
 

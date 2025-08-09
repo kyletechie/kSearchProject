@@ -7,14 +7,14 @@ function getName($){
   const name = selectByAttr($, "meta", {
     property: "og:title"
   }).attr("content");
-  return name || "N/A";
+  return name;
 }
 
 function getBio($){
   const bio = selectByAttr($, "meta", {
     property: "og:description"
   }).attr("content");
-  return bio || "N/A";
+  return bio;
 }
 
 function main(data){
@@ -22,8 +22,8 @@ function main(data){
   const name = getName($);
   const bio = getBio($);
   return {
-    name,
-    bio
+    ...(name && { name }),
+    ...(bio && { bio })
   }
 }
 

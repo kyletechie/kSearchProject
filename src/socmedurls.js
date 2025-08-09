@@ -2,6 +2,7 @@ import ytscraper from "../scrapers/youtube.js";
 import igscraper from "../scrapers/instagram.js";
 import ttscraper from "../scrapers/tiktok.js";
 import tgscraper from "../scrapers/telegram.js";
+import fbscraper from "../scrapers/facebook.js";
 
 class SocuriFormatter {
   constructor(username) {
@@ -15,7 +16,8 @@ class SocuriFormatter {
   soc = {
     facebook: () => ({
       url: this.#commonURIUnPlacement("https://facebook.com"),
-      platform: "Facebook"
+      platform: "Facebook",
+      scraper: fbscraper
     }),
     instagram: () => ({
       url: this.#commonURIUnPlacement("https://instagram.com"),

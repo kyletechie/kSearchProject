@@ -6,7 +6,7 @@ function getName($){
   if (name && name[1]){
     return name[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getID($){
@@ -15,7 +15,7 @@ function getID($){
   if (id && id[1]){
     return id[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getBio($){
@@ -24,7 +24,7 @@ function getBio($){
   if (bio && bio[1]){
     return bio[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function isVerified($){
@@ -33,7 +33,7 @@ function isVerified($){
   if (verified && verified[1]){
     return verified[1] === "true";
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getCreationDate($){
@@ -42,7 +42,7 @@ function getCreationDate($){
   if (creationTime && creationTime[1]){
     return new Date(parseInt(creationTime[1]) * 1000).toString();
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function isTiktokSeller($){
@@ -51,7 +51,7 @@ function isTiktokSeller($){
   if (ttSeller && ttSeller[1]){
     return ttSeller[1] === "true";
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function isPrivate($){
@@ -60,7 +60,7 @@ function isPrivate($){
   if (_private && _private[1]){
     return _private[1] === "true";
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getCountry($){
@@ -69,7 +69,7 @@ function getCountry($){
   if (country && country[1]){
     return country[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getFollowerCount($){
@@ -78,7 +78,7 @@ function getFollowerCount($){
   if (followers && followers[1]){
     return followers[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getFollowingCount($){
@@ -87,7 +87,7 @@ function getFollowingCount($){
   if (following && following[1]){
     return following[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getLikesCount($){
@@ -96,7 +96,7 @@ function getLikesCount($){
   if (likes && likes[1]){
     return likes[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getVideoCount($){
@@ -105,7 +105,7 @@ function getVideoCount($){
   if (videos && videos[1]){
     return videos[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function main(data){
@@ -123,18 +123,18 @@ function main(data){
   const likes = getLikesCount($);
   const posts = getVideoCount($);
   return {
-    name,
-    private: _private,
-    ID,
-    bio,
-    verified,
-    tiktokSeller,
-    accountCreationDate,
-    country,
-    followers,
-    following,
-    likes,
-    posts
+    ...(name && { name }),
+    ...(_private && { private: _private }),
+    ...(ID && { ID }),
+    ...(bio && { bio }),
+    ...(verified && { verified }),
+    ...(tiktokSeller && { tiktokSeller }),
+    ...(accountCreationDate && { accountCreationDate }),
+    ...(country && { country }),
+    ...(followers && { followers }),
+    ...(following && { following }),
+    ...(likes && { likes }),
+    ...(posts && { posts })
   }
 }
 

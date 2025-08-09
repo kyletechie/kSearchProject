@@ -9,7 +9,7 @@ function getName($){
   if (name && name[1]){
     return name[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getID($){
@@ -18,7 +18,7 @@ function getID($){
   if (id && id[1]){
     return id[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function isPrivate($){
@@ -27,7 +27,7 @@ function isPrivate($){
   if (isPrivate && isPrivate[1]){
     return isPrivate[1] === "true";
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function isVerified($){
@@ -36,7 +36,7 @@ function isVerified($){
   if (isVerified && isVerified[1]){
     return isVerified[1] === "true";
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getFollowingCount($){
@@ -53,7 +53,7 @@ function getFollowingCount($){
   if (following && following[1]){
     return parseInt(following[1]);
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getFollowersCount($){
@@ -70,7 +70,7 @@ function getFollowersCount($){
   if (followers && followers[1]){
     return parseInt(followers[1]);
   }
-  return "N/A";
+  //return "N/A";
 } 
 
 function getPostsCount($){
@@ -87,7 +87,7 @@ function getPostsCount($){
   if (posts && posts[1]){
     return parseInt(posts[1]);
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getBio($){
@@ -96,7 +96,7 @@ function getBio($){
   if (bio && bio[1]){
     return bio[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getCategory($){
@@ -105,7 +105,7 @@ function getCategory($){
   if (category && category[1]){
     return category[1];
   }
-  return "N/A";
+  //return "N/A";
 }
 
 function getBioLinks($){
@@ -120,7 +120,7 @@ function getBioLinks($){
     }
     return results;
   } catch(e){
-    return "N/A";
+    //return "N/A";
   }
 }
 
@@ -138,16 +138,16 @@ function main(data){
     const bioLinks = getBioLinks($);
     const category = getCategory($);
     return {
-      name,
-      ID,
-      private: _private,
-      verified,
-      following,
-      followers,
-      posts,
-      bio,
-      category,
-      bioLinks
+      ...(name && { name }),
+      ...(ID && { ID }),
+      ...(_private && { private: _private }),
+      ...(verified && { verified }),
+      ...(following && { following }),
+      ...(followers && { followers }),
+      ...(posts && { posts }),
+      ...(bio && { bio }),
+      ...(category && { category }),
+      ...(bioLinks && { bioLinks })
     }
   } catch(e){
     return {};
