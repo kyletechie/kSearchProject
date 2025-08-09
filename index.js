@@ -66,7 +66,7 @@ program
   )
   .option(
     "--update",
-    "Check for updates and automatically update kSearch to the latest version."
+    "Update kSearch to the latest version."
   );
 
 program.parse()
