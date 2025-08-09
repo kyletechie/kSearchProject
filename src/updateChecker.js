@@ -22,6 +22,7 @@ async function getLatestVersion(){
 
 async function isUpToDate() {
   try{
+    await git.fetch();
     const status = await git.status();
     const branch = status.current;
     const localHash = await git.revparse([branch]);
