@@ -206,6 +206,33 @@ class SocuriFormatter {
       url: this.#commonURIUnPlacement("https://t.me"),
       platform: "Telegram",
       scraper: tgscraper
+    }),
+
+    // NSFW
+    pornhub: () => ({
+      url: this.#commonURIUnPlacement("https://pornhub.com/users"),
+      platform: "Pornhub",
+      nsfw: true
+    }),
+    onlyfans: () => ({
+      url: this.#commonURIUnPlacement("https://onlyfans.com"),
+      platform: "Only Fans",
+      nsfw: true
+    }),
+    xvideos: () => ({
+      url: this.#commonURIUnPlacement("https://xvideos.com/profiles"),
+      platform: "X Videos",
+      nsfw: true
+    }),
+    xhamster: () => ({
+      url: this.#commonURIUnPlacement("https://xhamster.com/users/profiles"),
+      platform: "X Hamster",
+      nsfw: true
+    }),
+    xhamsterlive: () => ({
+      url: `https://xhamsterlive.com/${this.username}/profile`,
+      platform: "X Hamster Live",
+      nsfw: true
     })
   };
 

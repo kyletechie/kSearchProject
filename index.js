@@ -67,6 +67,10 @@ program
   .option(
     "--update",
     "Update kSearch to the latest version."
+  )
+  .option(
+    "--nsfw",
+    "Include NSFW websites"
   );
 
 program.parse()
@@ -100,7 +104,10 @@ async function main() {
   if (opts.verbose) logger.verbose(`Options: ${inspect(opts, { colors: true })}`);
 
   const socmedurls = new SocMeds(opts.username);
-  const allSocMeds = Object.values(socmedurls.getAll());
+  let allSocMeds = Object.values(socmedurls.getAll()).filter(v => !v.nsfw);
+  if (opts.nsfw){
+    allSocMeds = Object.values(socmedurls.getAll());
+  }
 
   logger.info(`Loaded ${colors.yellow}${allSocMeds.length}${colors.white} platforms to scan.`);
 
