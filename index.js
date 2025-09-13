@@ -23,7 +23,7 @@ import getVersion from "./src/version.js";
 import isUpToDate from "./src/updateChecker.js";
 
 const program = new Command();
-const outputPath = path.join(process.cwd(), "results");
+const outputPath = path.join(process.cwd(), "ksearch-reports");
 const outputFormats = ["json", "csv", "yaml", "txt"];
 
 const repoStatus = await isUpToDate();
@@ -62,7 +62,7 @@ program
   )
   .option(
     "-v, --verbose",
-    "Show detailed logs of what the tool is doing, including each HTTP request."
+    "Show extra details about what the tool is doing."
   )
   .option(
     "--update",
@@ -70,8 +70,8 @@ program
   )
   .option(
     "--nsfw",
-    "Include NSFW websites"
-  );
+    "Include adult-content sites"
+  )
 
 program.parse()
 
